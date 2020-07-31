@@ -657,6 +657,7 @@ int xhci_run(struct usb_hcd *hcd)
 }
 EXPORT_SYMBOL_GPL(xhci_run);
 
+#if 0
 static void xhci_only_stop_hcd(struct usb_hcd *hcd)
 {
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
@@ -671,6 +672,7 @@ static void xhci_only_stop_hcd(struct usb_hcd *hcd)
 	xhci->shared_hcd = NULL;
 	spin_unlock_irq(&xhci->lock);
 }
+#endif
 
 /*
  * Stop xHCI driver.
@@ -686,10 +688,8 @@ void xhci_stop(struct usb_hcd *hcd)
 	u32 temp;
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
 
-	if (!usb_hcd_is_primary_hcd(hcd)) {
-		xhci_only_stop_hcd(xhci->shared_hcd);
+	if (!usb_hcd_is_primary_hcd(hcd))
 		return;
-	}
 
 	spin_lock_irq(&xhci->lock);
 	/* Make sure the xHC is halted for a USB3 roothub
